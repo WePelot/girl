@@ -3,9 +3,10 @@ spring:
     active: dev
   datasource:
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://127.0.0.1:3306/test
+#      url: jdbc:mysql://127.0.0.1:3306/test  自测使用地址
+      url: jdbc:mysql://localhost:3306/testdb    #公司使用地址请求
       username: root
-      password:
+      password: 123456
   jpa:
     hibernate:
       ddl-auto: update
