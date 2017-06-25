@@ -1,9 +1,18 @@
-package com.imooc;
+package com.imooc.controller;
 
+import com.imooc.domain.Girl;
+import com.imooc.domain.Result;
+import com.imooc.repository.GirlRepository;
+import com.imooc.service.GirlService;
+import com.imooc.utils.ReusltUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -13,7 +22,13 @@ import java.util.List;
 public class GirlController {
 
     @Autowired
-    private GirlResposity girlResposity;
+    private GirlRepository girlRespository;
+
+    @Autowired
+    private GirlService girlService;
+
+    private final static Logger logger = LoggerFactory.getLogger(GirlController.class);
+
 
     /**
      * 获取所有的girl
@@ -21,7 +36,8 @@ public class GirlController {
      */
     @GetMapping(value = "/girls")
     public List<Girl> girls(){
-        return girlResposity.findAll();
+        logger.info("1111");
+        return girlRespository.findAll();
     }
 
     /**
@@ -31,7 +47,7 @@ public class GirlController {
      */
     @GetMapping(value = "/girls/{id}")
     public Girl getGirlsById(@PathVariable("id") Integer id){
-        return girlResposity.findOne(id);
+        return girlRespository.findOne(id);
     }
 
 
@@ -42,40 +58,34 @@ public class GirlController {
      */
     @GetMapping(value = "/girls/age/{age}")
     public List<Girl> getGirlListByAge(@PathVariable("age") Integer age){
-        return girlResposity.findByAge(age);
+        return girlRespository.findByAge(age);
     }
 
     /**
      * 修改girl
-     * @param id
-     * @param age
-     * @param cupSize
      * @return
      */
     @PutMapping(value = "/girls")
-    public Girl updateGirl(@RequestParam(value = "id",required = true) Integer id,
-                           @RequestParam(value = "age",required = false,defaultValue = "0") Integer age,
-                           @RequestParam(value = "cupSize",required = false,defaultValue = "A") String cupSize){
-        Girl girl = new Girl();
-        girl.setId(id);
-        girl.setAge(age);
-        girl.setCupSize(cupSize);
-        return  girlResposity.save(girl);
+    public Girl updateGirl(@Valid Girl girl){
+//        Girl girl = new Girl();
+//        girl.setId(id);
+//        girl.setAge(age);
+//        girl.setCupSize(cupSize);
+        return  girlRespository.save(girl);
     }
 
     /**
      * 添加girl
-     * @param age
-     * @param cupSize
      * @return
      */
     @PostMapping(value = "/girls")
-    public Girl addGirl(@RequestParam(value = "age",required = false,defaultValue = "0") Integer age,
-                        @RequestParam(value = "cupSize", required = false, defaultValue = "A") String cupSize){
-        Girl girl = new Girl();
-        girl.setCupSize(cupSize);
-        girl.setAge(age);
-        return girlResposity.save(girl);
+    public Result<Girl> addGirl(@Valid Girl girl, BindingResult bindingResult){
+        Result result = new Result();
+        if (bindingResult.hasErrors()){
+//            bindingResult.getFieldError().getDefaultMessage()为表单校验返回的错误信息
+            return ReusltUtil.error(-1,bindingResult.getFieldError().getDefaultMessage());
+        }
+        return ReusltUtil.success(girlRespository.save(girl));
     }
 
 //    /**
@@ -93,7 +103,7 @@ public class GirlController {
      */
     @DeleteMapping(value = "/girls/{id}")
     public void delGirl(@PathVariable(value = "id", required = true) Integer id){
-        girlResposity.delete(id);
+        girlRespository.delete(id);
     }
 
     @Transactional
@@ -104,13 +114,16 @@ public class GirlController {
         Girl girl2 = new Girl();
         girl2.setCupSize("A");
         girl2.setAge(18);
-        girlResposity.save(girl2);
+        girlRespository.save(girl2);
 
         Girl girl = new Girl();
         girl.setCupSize("EE");
         girl.setAge(17);
-        girlResposity.save(girl);
+        girlRespository.save(girl);
+    }
 
-
+    @GetMapping(value = "/girl/getAge/{id}")
+    public void getAge(@PathVariable("id") Integer id) throws Exception {
+        girlService.getAge(id);
     }
 }

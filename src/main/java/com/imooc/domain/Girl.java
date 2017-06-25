@@ -1,8 +1,10 @@
-package com.imooc;
+package com.imooc.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by admin on 2017/6/19.
@@ -15,7 +17,11 @@ public class Girl {
 
     private String cupSize;
 
+    @Min(value = 0,message = "年龄不能小于0岁")
     private Integer age;
+
+    @NotNull(message = "金额不能为空")
+    private Integer money;
 
     public Girl() {
     }
@@ -42,5 +48,22 @@ public class Girl {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public Integer getMoney() {
+        return money;
+    }
+
+    public void setMoney(Integer money) {
+        this.money = money;
+    }
+
+    @Override
+    public String toString() {
+        return "Girl{" +
+                "id=" + id +
+                ", cupSize='" + cupSize + '\'' +
+                ", age=" + age +
+                '}';
     }
 }

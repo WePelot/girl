@@ -42,6 +42,12 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!-- -->
+		<dependency>
+			<groupId>org.springfreamwork.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+
 		<!-- 前端模板-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
